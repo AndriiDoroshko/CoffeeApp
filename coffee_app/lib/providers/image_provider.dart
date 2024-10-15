@@ -3,8 +3,7 @@ import 'package:coffee_app/providers/network_provider.dart';
 import 'package:flutter/material.dart';
 
 class ApiEndPoint {
-  static String baseUrl = 'https://coffee.alexflipnote.dev';
-  static String randomRoute = 'random.json';
+  static String randomCoffeeUrl = 'https://coffee.alexflipnote.dev/random.json';
 }
 
 abstract class ImageProvider {
@@ -17,24 +16,21 @@ class APIImageProvider implements ImageProvider {
   @override
   Future<Image> getImage() async {
     try {
-      final result = await networkProvider.getApi(
-          ApiEndPoint.baseUrl, ApiEndPoint.randomRoute);
+      final result = await networkProvider.getApi(ApiEndPoint.randomCoffeeUrl);
       final imageData = json.decode(result) as Map<String, dynamic>;
       final randomImageResponse = RandomImageResponse.fromJson(imageData);
-      final imageBytes =
-          await networkProvider.download(randomImageResponse.file.toString());
+      final imageBytes = await networkProvider.download(randomImageResponse.file);
+
       final image = Image.memory(imageBytes);
       return image;
-    } on Exception catch (e) {
-      print('APIPortfolioProvider: $e');
-
-      throw e.toString();
+    } catch (e) {
+      return Future.error(e);
     }
   }
 }
 
 class RandomImageResponse {
-  final Uri file;
+  final String file;
 
   RandomImageResponse(this.file);
 

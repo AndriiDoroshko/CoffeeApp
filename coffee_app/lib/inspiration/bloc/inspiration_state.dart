@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show immutable;
 import 'package:flutter/material.dart';
 
 @immutable
@@ -10,7 +11,7 @@ class InspirationLoadingState implements InspirationState {
 
 class InspirationLoadedState implements InspirationState {
   final Image? image;
-  final Exception? imageRequestException;
+  final String? imageRequestException;
 
   InspirationLoadedState({required this.image, required this.imageRequestException});
 }

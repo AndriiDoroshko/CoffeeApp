@@ -17,8 +17,8 @@ class InspirationBloc extends Bloc<InspirationEvent, InspirationState> {
         emit(InspirationLoadingState());
         final image = await imageProvider.getImage();
         emit(InspirationLoadedState(image: image, imageRequestException: null));
-      } on Exception catch (e) {
-        emit(InspirationLoadedState(image: null, imageRequestException: e));
+      } catch (e) {
+        emit(InspirationLoadedState(image: null, imageRequestException: e.toString()));
       }
     });
   }
