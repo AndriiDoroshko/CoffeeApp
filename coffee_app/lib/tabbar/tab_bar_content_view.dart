@@ -1,3 +1,4 @@
+import 'package:coffee_app/favorites/favorites_view.dart';
 import 'package:coffee_app/inspiration/inspiration_view.dart';
 import 'package:coffee_app/tabbar/bloc/tab_bar_bloc.dart';
 import 'package:coffee_app/tabbar/bloc/tab_bar_state.dart';
@@ -22,10 +23,7 @@ class TabBarContentView extends StatelessWidget {
             case TabBarItems.add:
               return const InspirationView();
             case TabBarItems.favorites:
-             return Scaffold(
-                body: Container(
-              color: Colors.blue,
-              ));
+             return const FavoriteView();
           }
         });
   }

@@ -19,13 +19,13 @@ class InspirationView extends StatelessWidget {
           if (state.imageRequestException != null) {
             showErrorDialog(
                 context, state.imageRequestException ?? "Unknown error");
-          } else if (state.imageSaved) {
-            showSuccessDialog(context, 'Image saved!');
           }
         }
       }, builder: (context, state) {
         final bloc = context.read<InspirationBloc>();
 
+        InspirationEvent? favoriteButtonActionEvent;
+        var favoriteButtonActionText = const Text("Save");
         var image = const SizedBox(
           width: 44,
           height: 44,
@@ -39,6 +39,14 @@ class InspirationView extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.6,
               child: Image.memory(state.imageBytes!),
             );
+            favoriteButtonActionText
+             = state.imageSaved
+              ? const Text("Remove")
+              : const Text("Save");
+            favoriteButtonActionEvent
+             = state.imageSaved
+              ? InspirationDeleteImageEvent(imageBytes: state.imageBytes!)
+              : InspirationSaveImageEvent(imageBytes: state.imageBytes!);
           } else if (state.imageRequestException != null) {
             image = SizedBox(
                 width: MediaQuery.of(context).size.width,
@@ -67,14 +75,11 @@ class InspirationView extends StatelessWidget {
                     const SizedBox(width: 20),
                     OutlinedButton(
                       onPressed: () {
-                        if (state is InspirationLoadedState) {
-                          if (state.imageBytes != null) {
-                            bloc.add(InspirationSaveImageEvent(
-                                imageBytes: state.imageBytes!));
-                          }
+                        if (favoriteButtonActionEvent != null) {
+                          bloc.add(favoriteButtonActionEvent);
                         }
                       },
-                      child: const Text('Save'),
+                      child: favoriteButtonActionText,
                     ),
                   ],
                 ),

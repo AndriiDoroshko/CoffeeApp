@@ -5,7 +5,6 @@ abstract class InspirationState {
 }
 
 class InspirationLoadingState implements InspirationState {
-  
 }
 
 class InspirationLoadedState implements InspirationState {

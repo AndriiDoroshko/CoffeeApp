@@ -15,9 +15,26 @@ class InspirationBloc extends Bloc<InspirationEvent, InspirationState> {
     on<InspirationSaveImageEvent>((event, emit) async {
       try {
         final imageBytes = event.imageBytes;
-        imageProvider.saveImage(imageBytes);
+        final deletedImage = await imageProvider.saveImage(imageBytes);
         emit(InspirationLoadedState(
-            imageBytes: imageBytes, imageRequestException: null, imageSaved: true));
+            imageBytes: deletedImage.imageBytes,
+            imageRequestException: null,
+            imageSaved: deletedImage.isSaved));
+      } catch (e) {
+        emit(InspirationLoadedState(
+            imageBytes: null, imageRequestException: e.toString(), imageSaved: false));
+      }
+    });
+
+    on<InspirationDeleteImageEvent>((event, emit) async {
+      try {
+        final imageBytes = event.imageBytes;
+        final deletedImage = await imageProvider.deleteImage(imageBytes);
+
+        emit(InspirationLoadedState(
+            imageBytes: deletedImage.imageBytes,
+            imageRequestException: null,
+            imageSaved: deletedImage.isSaved));
       } catch (e) {
         emit(InspirationLoadedState(
             imageBytes: null, imageRequestException: e.toString(), imageSaved: false));
@@ -27,12 +44,16 @@ class InspirationBloc extends Bloc<InspirationEvent, InspirationState> {
     on<InspirationRefreshEvent>((event, emit) async {
       try {
         emit(InspirationLoadingState());
-        final imageBytes = await imageProvider.getImage();
+        final downloadedImage = await imageProvider.getImage();
         emit(InspirationLoadedState(
-            imageBytes: imageBytes, imageRequestException: null, imageSaved: false));
+            imageBytes: downloadedImage.imageBytes,
+            imageRequestException: null, 
+            imageSaved: downloadedImage.isSaved));
       } catch (e) {
         emit(InspirationLoadedState(
-            imageBytes: null, imageRequestException: e.toString(), imageSaved: false));
+            imageBytes: null, 
+            imageRequestException: e.toString(), 
+            imageSaved: false));
       }
     });
   }

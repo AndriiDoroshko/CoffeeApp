@@ -17,3 +17,9 @@ class InspirationSaveImageEvent implements InspirationEvent {
 
   InspirationSaveImageEvent({required this.imageBytes});
 }
+
+class InspirationDeleteImageEvent implements InspirationEvent {
+  final Uint8List imageBytes;
+
+  InspirationDeleteImageEvent({required this.imageBytes});
+}
