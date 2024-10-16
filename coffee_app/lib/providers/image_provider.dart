@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:coffee_app/providers/network_provider.dart';
+import 'package:coffee_app/providers/storage_provider.dart';
 import 'package:flutter/material.dart';
 
 class ApiEndPoint {
@@ -7,26 +9,43 @@ class ApiEndPoint {
 }
 
 abstract class ImageProvider {
-  Future<Image> getImage();
+  Future<Uint8List> getImage();
+  Future<bool> saveImage(Uint8List imageBytes);
 }
 
 class APIImageProvider implements ImageProvider {
   final networkProvider = NetworkApiService();
+  final storageService = StorageService();
 
   @override
-  Future<Image> getImage() async {
+  Future<Uint8List> getImage() async {
     try {
       final result = await networkProvider.getApi(ApiEndPoint.randomCoffeeUrl);
       final imageData = json.decode(result) as Map<String, dynamic>;
       final randomImageResponse = RandomImageResponse.fromJson(imageData);
       final imageBytes = await networkProvider.download(randomImageResponse.file);
 
-      final image = Image.memory(imageBytes);
-      return image;
+      return imageBytes;
     } catch (e) {
       return Future.error(e);
     }
   }
+
+  @override
+  Future<bool> saveImage(Uint8List imageBytes) async {
+    try {
+      final isSaved = await storageService.saveImageLocally(imageBytes);
+      if (isSaved) {
+        return isSaved;
+      }
+      return Future.error('Can not save this image. Try again later');  
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+
+
 }
 
 class RandomImageResponse {

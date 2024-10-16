@@ -17,7 +17,10 @@ class InspirationView extends StatelessWidget {
           listener: (context, state) {
         if (state is InspirationLoadedState) {
           if (state.imageRequestException != null) {
-            showErrorDialog(context, state.imageRequestException ?? "Unknown error");
+            showErrorDialog(
+                context, state.imageRequestException ?? "Unknown error");
+          } else if (state.imageSaved) {
+            showSuccessDialog(context, 'Image saved!');
           }
         }
       }, builder: (context, state) {
@@ -30,11 +33,11 @@ class InspirationView extends StatelessWidget {
         );
 
         if (state is InspirationLoadedState) {
-          if (state.image != null) {
+          if (state.imageBytes != null) {
             image = SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.6,
-              child: state.image ?? const Icon(Icons.image),
+              child: Image.memory(state.imageBytes!),
             );
           } else if (state.imageRequestException != null) {
             image = SizedBox(
@@ -57,15 +60,20 @@ class InspirationView extends StatelessWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        context
-                            .read<InspirationBloc>()
-                            .add(InspirationRefreshEvent());
+                        bloc.add(InspirationRefreshEvent());
                       },
                       child: const Text('Load New'),
                     ),
                     const SizedBox(width: 20),
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if (state is InspirationLoadedState) {
+                          if (state.imageBytes != null) {
+                            bloc.add(InspirationSaveImageEvent(
+                                imageBytes: state.imageBytes!));
+                          }
+                        }
+                      },
                       child: const Text('Save'),
                     ),
                   ],
