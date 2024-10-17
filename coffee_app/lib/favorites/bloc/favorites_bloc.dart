@@ -13,7 +13,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
        try {
         final deletedImage = await imageProvider.getAllImages();
         
-        emit(FavoritesLoadedState(imageBytes: deletedImage, imageRequestException: null));
+        emit(FavoritesLoadedState(imageBytes: deletedImage.reversed.toList(), imageRequestException: null));
       } catch (e) {
         emit(FavoritesLoadedState(imageBytes: [], imageRequestException: e.toString()));
       }
