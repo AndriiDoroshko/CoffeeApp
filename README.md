@@ -30,19 +30,19 @@ Make sure you have the following installed on your machine before running the ap
     git clone https://github.com/AndriiDoroshko/CoffeeApp.git
     ```
 
-2. **Navigate to the Project Directory:
+2. **Navigate to the Project Directory**:
     Go to the root of the project: 
     ```bash
     cd CoffeeApp
     ```
 
-3. **Install Dependencies: 
+3. **Install Dependencies**: 
     Run the following command to install all required packages:
     ```bash
     flutter pub get
     ```
 
-4. **Run the App:
+4. **Run the App**:
     ```bash
     flutter run
     ```
